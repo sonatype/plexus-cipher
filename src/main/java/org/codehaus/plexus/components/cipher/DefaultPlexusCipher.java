@@ -16,16 +16,13 @@ package org.codehaus.plexus.components.cipher;
  * limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -35,14 +32,12 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-import javax.swing.plaf.SliderUI;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64Encoder;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.codehaus.plexus.util.StringOutputStream;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -57,6 +52,7 @@ public class DefaultPlexusCipher
 {
   private static final String SECURITY_PROVIDER = "BC";
   private static final int    SALT_SIZE         = 8;
+  private static final String STRING_ENCODING = "UTF8";
 
   /**
    * Encryption algorithm to use by this instance. Needs protected scope for
@@ -142,7 +138,7 @@ public class DefaultPlexusCipher
       Cipher cipher = init( passPhrase, salt, true );
 
       // Encode the string into bytes using utf-8
-      byte[] utf8 = str.getBytes( "UTF8" );
+      byte[] utf8 = str.getBytes( STRING_ENCODING );
 
       // Encrypt it
       byte[] enc = cipher.doFinal( utf8 );
@@ -156,10 +152,10 @@ public class DefaultPlexusCipher
       System.arraycopy( salt, 0, res, 1, saltLen );
       System.arraycopy( enc, 0, res, saltLen + 1, encLen );
 
-      StringOutputStream sout = new StringOutputStream();
-      b64.encode( res, 0, res.length, sout );
+      ByteArrayOutputStream bout = new ByteArrayOutputStream( res.length*2 );
+      b64.encode( res, 0, res.length, bout );
 
-      return sout.toString();
+      return bout.toString( STRING_ENCODING );
 
     }
     catch( Exception e )
