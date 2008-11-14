@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <artifactId>plexus-components</artifactId>
-    <groupId>org.codehaus.plexus</groupId>
-    <version>1.1.12</version>
+    <groupId>org.sonatype.spice</groupId>
+    <artifactId>spice-parent</artifactId>
+    <version>9</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
+  <groupId>org.sonatype.plexus</groupId>
   <artifactId>plexus-cipher</artifactId>
   <name>Plexus Cypher Component</name>
   <version>1.0.0-SNAPSHOT</version>
@@ -33,16 +34,28 @@
     </plugins>
   </build>
   <dependencies>
-    <dependency>
+  
+  
+  <dependency>
       <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>1.4.1</version>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.0-beta-1</version>
+      <scope>compile</scope>
     </dependency>
+    
     <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>1.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+  
+  <dependency>
       <groupId>bouncycastle</groupId>
       <artifactId>bcprov-jdk15</artifactId>
       <version>136</version>
     </dependency>
+
   </dependencies>
 </project>
 
