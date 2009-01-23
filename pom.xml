@@ -41,6 +41,12 @@
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-container-default</artifactId>
         <version>1.0-alpha-9-stable-1</version>
+        <exclusions>
+        	<exclusion>
+        		<artifactId>plexus-utils</artifactId>
+        		<groupId>org.codehaus.plexus</groupId>
+        	</exclusion>
+        </exclusions>
     </dependency>
   
     <dependency>

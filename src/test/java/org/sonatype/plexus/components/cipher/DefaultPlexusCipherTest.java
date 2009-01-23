@@ -15,8 +15,6 @@
 
 import junit.framework.TestCase;
 
-import org.codehaus.plexus.util.StringUtils;
-
 /**
  * Test the Plexus Cipher container
  * 
@@ -45,7 +43,7 @@ public class DefaultPlexusCipherTest
   public void testDefaultAlgorithmExists()
       throws Exception
   {
-    if( StringUtils.isEmpty( pc.algorithm ) )
+    if( pc.algorithm == null || pc.algorithm.length() < 1 )
       throw new Exception( "No default algoritm found in DefaultPlexusCipher" );
 
     String[] res = DefaultPlexusCipher.getCryptoImpls( "Cipher" );
