@@ -36,7 +36,6 @@ import org.bouncycastle.util.encoders.Base64Encoder;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @plexus.component
@@ -169,7 +168,7 @@ public class DefaultPlexusCipher
     public String decrypt( String str, String passPhrase )
         throws PlexusCipherException
     {
-        if ( StringUtils.isEmpty( str ) )
+        if ( str == null || str.length() < 1 )
             return str;
 
         try
@@ -215,7 +214,7 @@ public class DefaultPlexusCipher
     public String decryptDecorated( String str, String passPhrase )
         throws PlexusCipherException
     {
-        if ( StringUtils.isEmpty( str ) )
+        if ( str == null || str.length() < 1 )
             return str;
 
         if ( isEncryptedString( str ) )
@@ -228,7 +227,7 @@ public class DefaultPlexusCipher
     // -------------------
     public boolean isEncryptedString( String str )
     {
-        if ( StringUtils.isEmpty( str ) )
+        if ( str == null || str.length() < 1 )
             return false;
 
         int start = str.indexOf( ENCRYPTED_STRING_DECORATION_START );
