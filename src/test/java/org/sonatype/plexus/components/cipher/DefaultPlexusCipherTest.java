@@ -10,23 +10,8 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
  */
-package org.sonatype.plexus.components.cipher;
+ package org.sonatype.plexus.components.cipher;
 
-/*
- * Copyright (C) 2008 Sonatype Inc.
- * Sonatype Inc, licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 
 import junit.framework.TestCase;
 
@@ -66,9 +51,12 @@ public class DefaultPlexusCipherTest
     String[] res = DefaultPlexusCipher.getCryptoImpls( "Cipher" );
     assertNotNull( "No Cipher providers found in the current environment", res );
 
-    for( String provider : res )
+    for( int i=0; i<res.length; i++ )
+    {
+        String provider = res[i];
       if( pc.algorithm.equalsIgnoreCase( provider ) )
         return;
+    }
 
     throw new Exception( "Cannot find default algorithm " + pc.algorithm
         + " in the current environment." );
@@ -79,11 +67,16 @@ public class DefaultPlexusCipherTest
       throws Exception
   {
     String[] res = DefaultPlexusCipher.getServiceTypes();
-    assertNotNull( "No Cipher providers found in the current environment", res );
+    assertNotNull( "No service types found in the current environment", res );
 
-    for( String provider : DefaultPlexusCipher.getCryptoImpls( "Cipher" ) )
+    String [] impls = DefaultPlexusCipher.getCryptoImpls( "Cipher" );
+    assertNotNull( "No Cipher providers found in the current environment", impls );
+
+    for( int i=0; i< impls.length; i++ )
       try
       {
+          String provider = impls[i];
+          
         System.out.print( provider );
         pc.algorithm = provider;
         pc.encrypt( str, passPhrase );

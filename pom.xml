@@ -26,8 +26,8 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.4</source>
+          <target>1.4</target>
         </configuration>
       </plugin>
     </plugins>
@@ -38,21 +38,21 @@
   <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-container-default</artifactId>
-      <version>1.0-beta-1</version>
+        <version>1.0-alpha-9-stable-1</version>
       <scope>compile</scope>
     </dependency>
-    
+<!--     
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>1.0.2</version>
+        <version>1.5.5</version>
       <scope>compile</scope>
     </dependency>
-  
+   -->
   <dependency>
       <groupId>bouncycastle</groupId>
-      <artifactId>bcprov-jdk15</artifactId>
-      <version>136</version>
+      <artifactId>bcprov-jdk14</artifactId>
+      <version>139</version>
     </dependency>
 
   </dependencies>
