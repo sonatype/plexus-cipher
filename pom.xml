@@ -4,11 +4,14 @@
     <artifactId>spice-parent</artifactId>
     <version>9</version>
   </parent>
+
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>org.sonatype.plexus</groupId>
   <artifactId>plexus-cipher</artifactId>
   <name>Plexus Cypher Component</name>
   <version>1.0.1-SNAPSHOT</version>
+
   <build>
     <plugins>
       <plugin>
@@ -34,25 +37,17 @@
   </build>
   <dependencies>
   
-  
-  <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-container-default</artifactId>
-        <version>1.0-alpha-9-stable-1</version>
-      <scope>compile</scope>
-    </dependency>
-<!--     
     <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-        <version>1.5.5</version>
-      <scope>compile</scope>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+          <version>1.0-alpha-9-stable-1</version>
+        <scope>compile</scope>
     </dependency>
-   -->
-  <dependency>
-      <groupId>bouncycastle</groupId>
-      <artifactId>bcprov-jdk14</artifactId>
-      <version>140</version>
+  
+    <dependency>
+        <groupId>bouncycastle</groupId>
+        <artifactId>bcprov-jdk14</artifactId>
+        <version>140</version>
     </dependency>
 
   </dependencies>
