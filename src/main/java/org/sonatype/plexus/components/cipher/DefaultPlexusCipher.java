@@ -65,6 +65,11 @@ public class DefaultPlexusCipher
      * @plexus.configuration default-value="23"
      */
     protected int iterationCount = 23;
+    
+    static
+    {
+        Security.addProvider( new BouncyCastleProvider() );
+    }
 
     // /**
     // * Salt to init this cypher
@@ -75,9 +80,9 @@ public class DefaultPlexusCipher
     // protected byte [] saltData = new byte[8];
     // ---------------------------------------------------------------
     public void initialize()
-        throws InitializationException
+    throws InitializationException
     {
-        Security.addProvider( new BouncyCastleProvider() );
+//        Security.addProvider( new BouncyCastleProvider() );
 
         // if( StringUtils.isEmpty(salt) && salt.length() > 7 )
         // System.arraycopy( salt.getBytes(), 0, saltData, 0, 8 );

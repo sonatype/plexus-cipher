@@ -52,7 +52,7 @@
   <dependency>
       <groupId>bouncycastle</groupId>
       <artifactId>bcprov-jdk14</artifactId>
-      <version>139</version>
+      <version>140</version>
     </dependency>
 
   </dependencies>
