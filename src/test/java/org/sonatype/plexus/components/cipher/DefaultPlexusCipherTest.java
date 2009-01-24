@@ -26,7 +26,7 @@ public class DefaultPlexusCipherTest
 {
   private String      passPhrase = "foofoo";
   String              str        = "my testing phrase";
-  String              encStr     = "CFUju8n8eKQHj8u0HI9uQMRmKQALtoXH7lY=";
+  String              encStr     = "CGdXen9AvVeXIKx6vCMe/DqpHER+tjJ7FUUOSZgKKRFH";
 
   DefaultPlexusCipher pc;
   // -------------------------------------------------------------
@@ -43,7 +43,7 @@ public class DefaultPlexusCipherTest
   public void testDefaultAlgorithmExists()
       throws Exception
   {
-    if( pc.algorithm == null || pc.algorithm.length() < 1 )
+    if( pc._algorithm == null || pc._algorithm.length() < 1 )
       throw new Exception( "No default algoritm found in DefaultPlexusCipher" );
 
     String[] res = DefaultPlexusCipher.getCryptoImpls( "Cipher" );
@@ -52,11 +52,11 @@ public class DefaultPlexusCipherTest
     for( int i=0; i<res.length; i++ )
     {
         String provider = res[i];
-      if( pc.algorithm.equalsIgnoreCase( provider ) )
-        return;
+        if( pc._algorithm.equalsIgnoreCase( provider ) )
+            return;
     }
 
-    throw new Exception( "Cannot find default algorithm " + pc.algorithm
+    throw new Exception( "Cannot find default algorithm " + pc._algorithm
         + " in the current environment." );
   }
 
@@ -76,7 +76,7 @@ public class DefaultPlexusCipherTest
           String provider = impls[i];
           
         System.out.print( provider );
-        pc.algorithm = provider;
+        pc._algorithm = provider;
         pc.encrypt( str, passPhrase );
         System.out.println( "------------------> Success !!!!!!" );
       }
@@ -87,20 +87,20 @@ public class DefaultPlexusCipherTest
   }
 
   // -------------------------------------------------------------
-  public void testDecrypt()
-      throws Exception
-  {
-    String res = pc.decrypt( encStr, passPhrase );
-    assertEquals( "Decryption did not produce desired result", str, res );
-  }
-
-  // -------------------------------------------------------------
   public void testEncrypt()
       throws Exception
   {
     String xRes = pc.encrypt( str, passPhrase );
     String res = pc.decrypt( xRes, passPhrase );
     assertEquals( "Encryption/Decryption did not produce desired result", str, res );
+  }
+
+  // -------------------------------------------------------------
+  public void testDecrypt()
+      throws Exception
+  {
+    String res = pc.decrypt( encStr, passPhrase );
+    assertEquals( "Decryption did not produce desired result", str, res );
   }
 
   // -------------------------------------------------------------

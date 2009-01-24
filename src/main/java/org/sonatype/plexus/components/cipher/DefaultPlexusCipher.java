@@ -13,8 +13,6 @@
  
 package org.sonatype.plexus.components.cipher;
 
-
-import java.io.ByteArrayOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
@@ -23,6 +21,7 @@ import java.security.Security;
 import java.security.spec.KeySpec;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.crypto.Cipher;
@@ -31,8 +30,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.encoders.Base64Encoder;
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
@@ -42,11 +40,9 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationExce
  * @author Oleg Gusakov</a>
  */
 public class DefaultPlexusCipher
-    extends AbstractLogEnabled
-    implements PlexusCipher, Initializable
+extends AbstractLogEnabled
+implements PlexusCipher, Initializable
 {
-    private static final String SECURITY_PROVIDER = "BC";
-
     private static final int SALT_SIZE = 8;
 
     private static final String STRING_ENCODING = "UTF8";
@@ -54,20 +50,31 @@ public class DefaultPlexusCipher
     /**
      * Encryption algorithm to use by this instance. Needs protected scope for tests
      * 
-     * @plexus.configuration default-value="PBEWithSHAAnd128BitRC4"
+     * @plexus.configuration default-value="PBEWithMD5AndTripleDES"
      */
-    protected String algorithm = "PBEWithSHAAnd128BitRC4";
+//    protected String _algorithm = "PBEWithSHAAnd128BitRC4";
+    protected String _algorithm = "PBEWithMD5AndTripleDES";
 
     /**
      * Number of iterations when generating the key
      * 
      * @plexus.configuration default-value="23"
      */
-    protected int iterationCount = 23;
+    protected int _iterationCount = 23;
+
+    /**
+     * security provider
+     */
+    protected Provider _securityProvider;
+
+    /**
+     * security provider
+     */
+    protected Map _params;
     
     static
     {
-        Security.addProvider( new BouncyCastleProvider() );
+//        Security.addProvider( new BouncyCastleProvider() );
     }
 
     // /**
@@ -95,10 +102,10 @@ public class DefaultPlexusCipher
         try
         {
             KeySpec keySpec = new PBEKeySpec( passPhrase.toCharArray() );
-            SecretKey key = SecretKeyFactory.getInstance( algorithm, SECURITY_PROVIDER ).generateSecret( keySpec );
-            Cipher cipher = Cipher.getInstance( algorithm );
+            SecretKey key = SecretKeyFactory.getInstance( _algorithm /*, SECURITY_PROVIDER*/ ).generateSecret( keySpec );
+            Cipher cipher = Cipher.getInstance( _algorithm );
 
-            PBEParameterSpec paramSpec = new PBEParameterSpec( salt, iterationCount );
+            PBEParameterSpec paramSpec = new PBEParameterSpec( salt, _iterationCount );
 
             cipher.init( mode, key, paramSpec );
             return cipher;
@@ -137,7 +144,6 @@ public class DefaultPlexusCipher
             byte[] enc = cipher.doFinal( utf8 );
 
             // Encode bytes to base64 to get a string
-            Base64Encoder b64 = new Base64Encoder();
             byte saltLen = (byte) ( salt.length & 0x00ff );
             int encLen = enc.length;
             byte[] res = new byte[salt.length + encLen + 1];
@@ -145,10 +151,9 @@ public class DefaultPlexusCipher
             System.arraycopy( salt, 0, res, 1, saltLen );
             System.arraycopy( enc, 0, res, saltLen + 1, encLen );
 
-            ByteArrayOutputStream bout = new ByteArrayOutputStream( res.length * 2 );
-            b64.encode( res, 0, res.length, bout );
+            byte [] encodedBytes = Base64.encodeBase64( res );
 
-            return bout.toString( STRING_ENCODING );
+            return new String( encodedBytes, STRING_ENCODING );
 
         }
         catch ( Exception e )
@@ -174,10 +179,7 @@ public class DefaultPlexusCipher
         try
         {
             // Decode base64 to get bytes
-            Base64Encoder decoder = new Base64Encoder();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            decoder.decode( str, baos );
-            byte[] res = baos.toByteArray();
+            byte[] res = Base64.decodeBase64( str.getBytes() );
 
             int saltLen = res[0] & 0x00ff;
             if ( saltLen != SALT_SIZE )
@@ -325,7 +327,7 @@ public class DefaultPlexusCipher
     // ---------------------------------------------------------------
     public static void main( String[] args )
     {
-        Security.addProvider( new BouncyCastleProvider() );
+//        Security.addProvider( new BouncyCastleProvider() );   
 
         String[] serviceTypes = getServiceTypes();
         if ( serviceTypes != null )
@@ -348,5 +350,24 @@ public class DefaultPlexusCipher
                 }
             }
     }
-    // ---------------------------------------------------------------
+    //---------------------------------------------------------------
+    public void init( String algorithm, Map params, Provider provider, Integer passes )
+    throws PlexusCipherException
+    {
+        _algorithm = algorithm;
+        
+        _params = params;
+
+        _securityProvider = provider;
+        
+        if( provider != null )
+        {
+            Security.addProvider( provider );
+        }
+
+        if( passes != null )
+            _iterationCount = passes.intValue();
+    }
+    //---------------------------------------------------------------
+    //---------------------------------------------------------------
 }
