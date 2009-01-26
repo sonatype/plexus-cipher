@@ -28,19 +28,6 @@ public interface PlexusCipher
     public static final char ENCRYPTED_STRING_DECORATION_STOP = '}';
 
     /**
-     * initialize the cipher
-     * 
-     * @param algorithm algo to use
-     * @param params algo params
-     * @param provider security provider
-     * @param passes number of iterations
-     *
-     * @throws PlexusCipherException
-     */
-    void init( String algorithm, Map params, Provider provider, Integer passes )
-    throws PlexusCipherException;
-
-    /**
      * encrypt given string with the given passPhrase and encode it into base64
      * 
      * @param str

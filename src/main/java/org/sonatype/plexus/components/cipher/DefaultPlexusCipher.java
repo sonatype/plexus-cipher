@@ -30,10 +30,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
-import org.apache.commons.codec.binary.Base64;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 
 /**
  * @plexus.component
@@ -41,125 +38,28 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationExce
  */
 public class DefaultPlexusCipher
 extends AbstractLogEnabled
-implements PlexusCipher, Initializable
+implements PlexusCipher
 {
     private static final int SALT_SIZE = 8;
 
     private static final String STRING_ENCODING = "UTF8";
 
-    /**
-     * Encryption algorithm to use by this instance. Needs protected scope for tests
-     * 
-     * @plexus.configuration default-value="PBEWithMD5AndTripleDES"
-     */
-//    protected String _algorithm = "PBEWithSHAAnd128BitRC4";
-    protected String _algorithm = "PBEWithMD5AndTripleDES";
-
-    /**
-     * Number of iterations when generating the key
-     * 
-     * @plexus.configuration default-value="23"
-     */
-    protected int _iterationCount = 23;
-
-    /**
-     * security provider
-     */
-    protected Provider _securityProvider;
-
-    /**
-     * security provider
-     */
-    protected Map _params;
+    private PBECipher _cipher;
     
-    static
-    {
-//        Security.addProvider( new BouncyCastleProvider() );
-    }
-
-    // /**
-    // * Salt to init this cypher
-    // *
-    // * @plexus.configuration default-value="maven.rules.in.this"
-    // */
-    // protected String salt = "maven.rules.in.this";
-    // protected byte [] saltData = new byte[8];
     // ---------------------------------------------------------------
-    public void initialize()
-    throws InitializationException
+    public DefaultPlexusCipher()
+    throws PlexusCipherException
     {
-//        Security.addProvider( new BouncyCastleProvider() );
-
-        // if( StringUtils.isEmpty(salt) && salt.length() > 7 )
-        // System.arraycopy( salt.getBytes(), 0, saltData, 0, 8 );
+        _cipher = new PBECipher();
     }
-
-    // ---------------------------------------------------------------
-    private Cipher init( String passPhrase, byte[] salt, boolean encrypt )
-        throws PlexusCipherException
-    {
-        int mode = encrypt ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE;
-        try
-        {
-            KeySpec keySpec = new PBEKeySpec( passPhrase.toCharArray() );
-            SecretKey key = SecretKeyFactory.getInstance( _algorithm /*, SECURITY_PROVIDER*/ ).generateSecret( keySpec );
-            Cipher cipher = Cipher.getInstance( _algorithm );
-
-            PBEParameterSpec paramSpec = new PBEParameterSpec( salt, _iterationCount );
-
-            cipher.init( mode, key, paramSpec );
-            return cipher;
-
-        }
-        catch ( Exception e )
-        {
-            throw new PlexusCipherException( e );
-        }
-    }
-
-    // ---------------------------------------------------------------
-    private byte[] getSalt( int saltSize )
-        throws NoSuchAlgorithmException, NoSuchProviderException
-    {
-        // SecureRandom sr = SecureRandom.getInstance( SECURE_RANDOM_ALGORITHM,
-        // SECURITY_PROVIDER );
-        SecureRandom sr = new SecureRandom();
-        sr.setSeed( System.currentTimeMillis() );
-        return sr.generateSeed( saltSize );
-    }
-
     // ---------------------------------------------------------------
     public String encrypt( String str, String passPhrase )
-        throws PlexusCipherException
+    throws PlexusCipherException
     {
-        try
-        {
-            byte[] salt = getSalt( SALT_SIZE );
-            Cipher cipher = init( passPhrase, salt, true );
+        if ( str == null || str.length() < 1 )
+            return str;
 
-            // Encode the string into bytes using utf-8
-            byte[] utf8 = str.getBytes( STRING_ENCODING );
-
-            // Encrypt it
-            byte[] enc = cipher.doFinal( utf8 );
-
-            // Encode bytes to base64 to get a string
-            byte saltLen = (byte) ( salt.length & 0x00ff );
-            int encLen = enc.length;
-            byte[] res = new byte[salt.length + encLen + 1];
-            res[0] = saltLen;
-            System.arraycopy( salt, 0, res, 1, saltLen );
-            System.arraycopy( enc, 0, res, saltLen + 1, encLen );
-
-            byte [] encodedBytes = Base64.encodeBase64( res );
-
-            return new String( encodedBytes, STRING_ENCODING );
-
-        }
-        catch ( Exception e )
-        {
-            throw new PlexusCipherException( e );
-        }
+        return _cipher.encrypt64( str, passPhrase );
     }
 
     // ---------------------------------------------------------------
@@ -176,40 +76,7 @@ implements PlexusCipher, Initializable
         if ( str == null || str.length() < 1 )
             return str;
 
-        try
-        {
-            // Decode base64 to get bytes
-            byte[] res = Base64.decodeBase64( str.getBytes() );
-
-            int saltLen = res[0] & 0x00ff;
-            if ( saltLen != SALT_SIZE )
-                throw new Exception( "default.plexus.cipher.encryptedStringCorruptedStructure" );
-
-            if ( res.length < ( saltLen + 2 ) )
-                throw new Exception( "default.plexus.cipher.encryptedStringCorruptedLength" );
-
-            byte[] salt = new byte[saltLen];
-            System.arraycopy( res, 1, salt, 0, saltLen );
-
-            int decLen = res.length - saltLen - 1;
-            if ( decLen < 1 )
-                throw new Exception( "default.plexus.cipher.encryptedStringCorruptedSize" );
-
-            byte[] dec = new byte[decLen];
-            System.arraycopy( res, saltLen + 1, dec, 0, decLen );
-
-            // Decrypt
-            Cipher cipher = init( passPhrase, salt, false );
-            byte[] utf8 = cipher.doFinal( dec );
-
-            // Decode using utf-8
-            return new String( utf8, "UTF8" );
-
-        }
-        catch ( Exception e )
-        {
-            throw new PlexusCipherException( e );
-        }
+        return _cipher.decrypt64( str, passPhrase );
     }
 
     // ---------------------------------------------------------------
@@ -226,7 +93,6 @@ implements PlexusCipher, Initializable
     }
 
     // ----------------------------------------------------------------------------
-    // -------------------
     public boolean isEncryptedString( String str )
     {
         if ( str == null || str.length() < 1 )
@@ -236,6 +102,7 @@ implements PlexusCipher, Initializable
         int stop = str.indexOf( ENCRYPTED_STRING_DECORATION_STOP );
         if ( start != -1 && stop != -1 && stop > start + 1 )
             return true;
+        
         return false;
     }
 
@@ -349,24 +216,6 @@ implements PlexusCipher, Initializable
                     System.out.println( serviceType + ": does not have any providers in this environment" );
                 }
             }
-    }
-    //---------------------------------------------------------------
-    public void init( String algorithm, Map params, Provider provider, Integer passes )
-    throws PlexusCipherException
-    {
-        _algorithm = algorithm;
-        
-        _params = params;
-
-        _securityProvider = provider;
-        
-        if( provider != null )
-        {
-            Security.addProvider( provider );
-        }
-
-        if( passes != null )
-            _iterationCount = passes.intValue();
     }
     //---------------------------------------------------------------
     //---------------------------------------------------------------

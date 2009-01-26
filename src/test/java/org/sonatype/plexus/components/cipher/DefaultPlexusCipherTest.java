@@ -36,27 +36,30 @@ public class DefaultPlexusCipherTest
     super.setUp();
 
     pc = new DefaultPlexusCipher();
-    pc.initialize();
   }
 
   // -------------------------------------------------------------
   public void testDefaultAlgorithmExists()
       throws Exception
   {
-    if( pc._algorithm == null || pc._algorithm.length() < 1 )
-      throw new Exception( "No default algoritm found in DefaultPlexusCipher" );
-
     String[] res = DefaultPlexusCipher.getCryptoImpls( "Cipher" );
     assertNotNull( "No Cipher providers found in the current environment", res );
+
+    System.out.println( "\n=== Available ciphers :" );
+    for( int i=0; i<res.length; i++ )
+    {
+        System.out.println( res[i] );
+    }
+    System.out.println( "====================" );
 
     for( int i=0; i<res.length; i++ )
     {
         String provider = res[i];
-        if( pc._algorithm.equalsIgnoreCase( provider ) )
+        if( PBECipher.KEY_ALG.equalsIgnoreCase( provider ) )
             return;
     }
 
-    throw new Exception( "Cannot find default algorithm " + pc._algorithm
+    throw new Exception( "Cannot find default algorithm " + PBECipher.KEY_ALG
         + " in the current environment." );
   }
 
@@ -76,7 +79,6 @@ public class DefaultPlexusCipherTest
           String provider = impls[i];
           
         System.out.print( provider );
-        pc._algorithm = provider;
         pc.encrypt( str, passPhrase );
         System.out.println( "------------------> Success !!!!!!" );
       }
