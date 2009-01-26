@@ -24,9 +24,9 @@ import junit.framework.TestCase;
 public class DefaultPlexusCipherTest
     extends TestCase
 {
-  private String      passPhrase = "foofoo";
+  private String      passPhrase = "testtest";
   String              str        = "my testing phrase";
-  String              encStr     = "5FjvnZvhNDMHHnxXoPu1a0WcgZzaArKRCnGBnsA83R7rYQHKGFrprtAM4Qyr4diV";
+  String              encStr     = "LFulS0pAlmMHpDtm+81oPcqctcwpco5p4Fo7640/gqDRifCahXBefG4FxgKcu17v";
 
   DefaultPlexusCipher pc;
   // -------------------------------------------------------------
@@ -93,7 +93,11 @@ public class DefaultPlexusCipherTest
       throws Exception
   {
     String xRes = pc.encrypt( str, passPhrase );
+    
+    System.out.println(xRes);
+    
     String res = pc.decrypt( xRes, passPhrase );
+    
     assertEquals( "Encryption/Decryption did not produce desired result", str, res );
   }
 

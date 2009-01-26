@@ -35,9 +35,9 @@ public class PBECipherTest
     
     String _cleatText = "veryOpenText";
     
-    String _encryptedText = "Pb15PN1+TRoHHD+d+vGR/BENUkBcKBXE8pbvhmmTUSA=";
+    String _encryptedText = "ibeHrdCOonkH7d7YnH7sarQLbwOk1ljkkM/z8hUhl4c=";
 
-    String _password = "foofoo";
+    String _password = "testtest";
     
     protected void setUp()
     throws Exception
@@ -54,6 +54,14 @@ public class PBECipherTest
         assertNotNull( enc );
         
         System.out.println(enc);
+
+        String enc2 = _cipher.encrypt64( _cleatText, _password );
+        
+        assertNotNull( enc2 );
+        
+        System.out.println(enc2);
+        
+        assertFalse( enc.equals( enc2 ) );
     }
     
     public void testDecrypt()
