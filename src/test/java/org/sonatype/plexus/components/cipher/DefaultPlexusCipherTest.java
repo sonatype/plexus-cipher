@@ -26,7 +26,7 @@ public class DefaultPlexusCipherTest
 {
   private String      passPhrase = "foofoo";
   String              str        = "my testing phrase";
-  String              encStr     = "CGdXen9AvVeXIKx6vCMe/DqpHER+tjJ7FUUOSZgKKRFH";
+  String              encStr     = "5FjvnZvhNDMHHnxXoPu1a0WcgZzaArKRCnGBnsA83R7rYQHKGFrprtAM4Qyr4diV";
 
   DefaultPlexusCipher pc;
   // -------------------------------------------------------------
