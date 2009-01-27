@@ -10,7 +10,7 @@
   <groupId>org.sonatype.plexus</groupId>
   <artifactId>plexus-cipher</artifactId>
   <name>Plexus Cypher Component</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
 
   <build>
     <plugins>
@@ -63,4 +63,10 @@
     </dependency>
  -->
   </dependencies>
+
+  <scm>
+    <connection>scm:svn:http://svn.sonatype.org/spice/tags/plexus-cipher-1.1</connection>
+    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/plexus-cipher-1.1</developerConnection>
+    <url>http://svn.sonatype.org/spice/tags/plexus-cipher-1.1</url>
+  </scm>
 </project>
