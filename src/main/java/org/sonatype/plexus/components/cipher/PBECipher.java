@@ -52,8 +52,6 @@ public class PBECipher
     
     protected static final byte WIPER = 0;
 
-    protected static final String RANDOM_ALG = "SHA1PRNG";
-
     protected static final String DIGEST_ALG = "SHA-256";
 
     protected static final String KEY_ALG = "AES";
@@ -73,7 +71,7 @@ public class PBECipher
         {
             _digester = MessageDigest.getInstance( DIGEST_ALG );
             
-            _secureRandom = SecureRandom.getInstance( RANDOM_ALG );
+            _secureRandom = new SecureRandom();
         }
         catch ( NoSuchAlgorithmException e )
         {
@@ -99,7 +97,7 @@ public class PBECipher
             byte[] salt = getSalt( SALT_SIZE );
             
             // spin it :)
-            SecureRandom.getInstance( RANDOM_ALG ).nextBytes( salt );
+            new SecureRandom().nextBytes( salt );
     
             Cipher cipher = createCipher( password.getBytes( STRING_ENCODING ), salt, Cipher.ENCRYPT_MODE  );
     
