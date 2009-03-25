@@ -30,6 +30,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -63,6 +64,8 @@ public class PBECipher
     protected MessageDigest _digester;
     
     protected SecureRandom _secureRandom;
+    
+    protected boolean _onLinux = false;
     //---------------------------------------------------------------
     public PBECipher()
     throws PlexusCipherException
@@ -71,7 +74,16 @@ public class PBECipher
         {
             _digester = MessageDigest.getInstance( DIGEST_ALG );
             
-            _secureRandom = new SecureRandom();
+            if( System.getProperty( "os.name", "blah" ).toLowerCase().indexOf( "linux" ) != -1 )
+                _onLinux = true;
+            
+            if( _onLinux )
+            {
+                System.setProperty( "securerandom.source", "file:/dev/./urandom");
+            }
+            else
+                _secureRandom = new SecureRandom();
+            
         }
         catch ( NoSuchAlgorithmException e )
         {
@@ -82,9 +94,21 @@ public class PBECipher
     private byte[] getSalt( int sz )
     throws NoSuchAlgorithmException, NoSuchProviderException
     {
-        _secureRandom.setSeed( System.currentTimeMillis() );
+        byte [] res = null;
         
-        return _secureRandom.generateSeed( sz );
+        if( _secureRandom != null )
+        {
+            _secureRandom.setSeed( System.currentTimeMillis() );
+            res = _secureRandom.generateSeed( sz );
+        }
+        else
+        {
+            res = new byte[ sz ];
+            Random r = new Random( System.currentTimeMillis() );
+            r.nextBytes( res );
+        }
+
+        return res;
     }
     //-------------------------------------------------------------------------------
     public String encrypt64( String clearText, String password )
@@ -97,7 +121,8 @@ public class PBECipher
             byte[] salt = getSalt( SALT_SIZE );
             
             // spin it :)
-            new SecureRandom().nextBytes( salt );
+            if( _secureRandom != null )
+                new SecureRandom().nextBytes( salt );
     
             Cipher cipher = createCipher( password.getBytes( STRING_ENCODING ), salt, Cipher.ENCRYPT_MODE  );
     
