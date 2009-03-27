@@ -107,15 +107,15 @@ public class DefaultPlexusCipherTest
   {
     String xRes = null;
     String res = null;
-    String pass = passPhrase;
+    String pass = "g";
     
-    for( int i=0; i<20; i++ )
+    for( int i=0; i<64; i++ )
     {
         pass = pass + 'a';
         
         xRes = pc.encrypt( str, pass );
     
-        System.out.println(xRes);
+        System.out.println( pass.length()+": "+xRes);
         
         res = pc.decrypt( xRes, pass );
         
