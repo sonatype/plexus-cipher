@@ -13,22 +13,11 @@
  
 package org.sonatype.plexus.components.cipher;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Provider;
-import java.security.SecureRandom;
 import java.security.Security;
-import java.security.spec.KeySpec;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
 
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
@@ -40,10 +29,6 @@ public class DefaultPlexusCipher
 extends AbstractLogEnabled
 implements PlexusCipher
 {
-    private static final int SALT_SIZE = 8;
-
-    private static final String STRING_ENCODING = "UTF8";
-
     private PBECipher _cipher;
     
     // ---------------------------------------------------------------
