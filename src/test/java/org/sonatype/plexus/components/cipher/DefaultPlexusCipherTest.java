@@ -102,6 +102,28 @@ public class DefaultPlexusCipherTest
   }
 
   // -------------------------------------------------------------
+  public void testEncryptVariableLengths()
+      throws Exception
+  {
+    String xRes = null;
+    String res = null;
+    String pass = passPhrase;
+    
+    for( int i=0; i<20; i++ )
+    {
+        pass = pass + 'a';
+        
+        xRes = pc.encrypt( str, pass );
+    
+        System.out.println(xRes);
+        
+        res = pc.decrypt( xRes, pass );
+        
+        assertEquals( "Encryption/Decryption did not produce desired result", str, res );
+    }
+  }
+
+  // -------------------------------------------------------------
   public void testDecrypt()
       throws Exception
   {
