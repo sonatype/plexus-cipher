@@ -150,5 +150,13 @@ public class DefaultPlexusCipherTest
     assertEquals( "Decoration failed", "aaa", res );
   }
   // -------------------------------------------------------------
+  public void testEncryptAndDecorate()
+      throws Exception
+  {
+    String res = pc.encryptAndDecorate( "my-password", "12345678" );
+    
+    assertEquals( '{', res.charAt( 0 ) );
+  }
+  // -------------------------------------------------------------
   // -------------------------------------------------------------
 }
