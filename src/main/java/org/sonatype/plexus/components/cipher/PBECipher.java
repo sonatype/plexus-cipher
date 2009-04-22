@@ -75,14 +75,18 @@ public class PBECipher
             _digester = MessageDigest.getInstance( DIGEST_ALG );
             
             if( System.getProperty( "os.name", "blah" ).toLowerCase().indexOf( "linux" ) != -1 )
+            {
                 _onLinux = true;
+            }
             
             if( _onLinux )
             {
                 System.setProperty( "securerandom.source", "file:/dev/./urandom");
             }
             else
+            {
                 _secureRandom = new SecureRandom();
+            }
             
         }
         catch ( NoSuchAlgorithmException e )
@@ -91,7 +95,7 @@ public class PBECipher
         }
     }
     //---------------------------------------------------------------
-    private byte[] getSalt( int sz )
+    private byte[] getSalt( final int sz )
     throws NoSuchAlgorithmException, NoSuchProviderException
     {
         byte [] res = null;
@@ -111,7 +115,7 @@ public class PBECipher
         return res;
     }
     //-------------------------------------------------------------------------------
-    public String encrypt64( String clearText, String password )
+    public String encrypt64( final String clearText, final String password )
     throws PlexusCipherException
     {
         try
@@ -122,7 +126,9 @@ public class PBECipher
             
             // spin it :)
             if( _secureRandom != null )
+            {
                 new SecureRandom().nextBytes( salt );
+            }
     
             Cipher cipher = createCipher( password.getBytes( STRING_ENCODING ), salt, Cipher.ENCRYPT_MODE  );
     
@@ -155,12 +161,12 @@ public class PBECipher
     }
 
     // -------------------------------------------------------------------------------
-    public String decrypt64( String encryptedText, String password )
+    public String decrypt64( final String encryptedText, final String password )
     throws PlexusCipherException
     {
         try
         {
-            byte [] allEncryptedBytes = Base64.decodeBase64( encryptedText.getBytes() );
+            byte[] allEncryptedBytes = Base64.decodeBase64( encryptedText.getBytes() );
             
             int totalLen = allEncryptedBytes.length;
             
@@ -172,7 +178,7 @@ public class PBECipher
     
             byte [] encryptedBytes = new byte[ totalLen - SALT_SIZE - 1 - padLen ];
             
-            System.arraycopy( allEncryptedBytes, SALT_SIZE+1, encryptedBytes, 0, totalLen-SALT_SIZE-padLen-1 );
+            System.arraycopy( allEncryptedBytes, SALT_SIZE + 1, encryptedBytes, 0, encryptedBytes.length );
             
             Cipher cipher = createCipher( password.getBytes( STRING_ENCODING ), salt, Cipher.DECRYPT_MODE  );
     
@@ -188,7 +194,7 @@ public class PBECipher
         }
     }
     //-------------------------------------------------------------------------------
-    private Cipher createCipher( byte [] pwdAsBytes, byte [] salt, int mode )
+    private Cipher createCipher( final byte [] pwdAsBytes, byte [] salt, final int mode )
     throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException
     {
         _digester.reset();

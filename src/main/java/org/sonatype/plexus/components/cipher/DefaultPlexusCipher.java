@@ -13,23 +13,23 @@
  
 package org.sonatype.plexus.components.cipher;
 
+import org.codehaus.plexus.logging.AbstractLogEnabled;
+
 import java.security.Provider;
 import java.security.Security;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-
 /**
- * @plexus.component
+ * @plexus.component role="org.sonatype.plexus.components.cipher.PlexusCipher" role-hint="default"
  * @author Oleg Gusakov</a>
  */
 public class DefaultPlexusCipher
 extends AbstractLogEnabled
 implements PlexusCipher
 {
-    private PBECipher _cipher;
+    private final PBECipher _cipher;
     
     // ---------------------------------------------------------------
     public DefaultPlexusCipher()
@@ -38,66 +38,80 @@ implements PlexusCipher
         _cipher = new PBECipher();
     }
     // ---------------------------------------------------------------
-    public String encrypt( String str, String passPhrase )
+    public String encrypt( final String str, final String passPhrase )
     throws PlexusCipherException
     {
         if ( str == null || str.length() < 1 )
+        {
             return str;
+        }
 
         return _cipher.encrypt64( str, passPhrase );
     }
 
     // ---------------------------------------------------------------
-    public String encryptAndDecorate( String str, String passPhrase )
+    public String encryptAndDecorate( final String str, final String passPhrase )
         throws PlexusCipherException
     {
         return decorate( encrypt( str, passPhrase ) );
     }
 
     // ---------------------------------------------------------------
-    public String decrypt( String str, String passPhrase )
+    public String decrypt( final String str, final String passPhrase )
         throws PlexusCipherException
     {
         if ( str == null || str.length() < 1 )
+        {
             return str;
+        }
 
         return _cipher.decrypt64( str, passPhrase );
     }
 
     // ---------------------------------------------------------------
-    public String decryptDecorated( String str, String passPhrase )
+    public String decryptDecorated( final String str, final String passPhrase )
         throws PlexusCipherException
     {
         if ( str == null || str.length() < 1 )
+        {
             return str;
+        }
 
         if ( isEncryptedString( str ) )
+        {
             return decrypt( unDecorate( str ), passPhrase );
+        }
 
         return decrypt( str, passPhrase );
     }
 
     // ----------------------------------------------------------------------------
-    public boolean isEncryptedString( String str )
+    public boolean isEncryptedString( final String str )
     {
         if ( str == null || str.length() < 1 )
+        {
             return false;
+        }
 
         int start = str.indexOf( ENCRYPTED_STRING_DECORATION_START );
         int stop = str.indexOf( ENCRYPTED_STRING_DECORATION_STOP );
         if ( start != -1 && stop != -1 && stop > start + 1 )
+        {
             return true;
+        }
         
         return false;
     }
 
     // ----------------------------------------------------------------------------
     // -------------------
-    public String unDecorate( String str )
+    public String unDecorate( final String str )
         throws PlexusCipherException
     {
         if ( !isEncryptedString( str ) )
+        {
             throw new PlexusCipherException( "default.plexus.cipher.badEncryptedPassword" );
+        }
 
         int start = str.indexOf( ENCRYPTED_STRING_DECORATION_START );
         int stop = str.indexOf( ENCRYPTED_STRING_DECORATION_STOP );
@@ -106,7 +120,7 @@ implements PlexusCipher
 
     // ----------------------------------------------------------------------------
     // -------------------
-    public String decorate( String str )
+    public String decorate( final String str )
     {
         return ENCRYPTED_STRING_DECORATION_START + ( str == null ? "" : str ) + ENCRYPTED_STRING_DECORATION_STOP;
     }
@@ -147,7 +161,7 @@ implements PlexusCipher
     /**
      * This method returns the available implementations for a service type
      */
-    public static String[] getCryptoImpls( String serviceType )
+    public static String[] getCryptoImpls( final String serviceType )
     {
         Set result = new HashSet();
 
@@ -177,12 +191,13 @@ implements PlexusCipher
     }
 
     // ---------------------------------------------------------------
-    public static void main( String[] args )
+    public static void main( final String[] args )
     {
 //        Security.addProvider( new BouncyCastleProvider() );   
 
         String[] serviceTypes = getServiceTypes();
         if ( serviceTypes != null )
+        {
             for ( int i = 0; i < serviceTypes.length; i++ )
             {
                 String serviceType = serviceTypes[i];
@@ -201,6 +216,7 @@ implements PlexusCipher
                     System.out.println( serviceType + ": does not have any providers in this environment" );
                 }
             }
+        }
     }
     //---------------------------------------------------------------
     //---------------------------------------------------------------
