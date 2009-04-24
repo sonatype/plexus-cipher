@@ -20,6 +20,8 @@ import java.security.Security;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @plexus.component role="org.sonatype.plexus.components.cipher.PlexusCipher" role-hint="default"
@@ -29,6 +31,9 @@ public class DefaultPlexusCipher
 extends AbstractLogEnabled
 implements PlexusCipher
 {
+    
+    private static final Pattern ENCRYPTED_STRING_PATTERN = Pattern.compile( ".*?[^\\\\]?\\{(.*?[^\\\\])\\}.*" );
+
     private final PBECipher _cipher;
     
     // ---------------------------------------------------------------
@@ -92,15 +97,10 @@ implements PlexusCipher
         {
             return false;
         }
-
-        int start = str.indexOf( ENCRYPTED_STRING_DECORATION_START );
-        int stop = str.indexOf( ENCRYPTED_STRING_DECORATION_STOP );
-        if ( start != -1 && stop != -1 && stop > start + 1 )
-        {
-            return true;
-        }
         
-        return false;
+        Matcher matcher = ENCRYPTED_STRING_PATTERN.matcher( str );
+        
+        return matcher.matches() || matcher.find();
     }
 
     // ----------------------------------------------------------------------------
@@ -108,14 +108,16 @@ implements PlexusCipher
     public String unDecorate( final String str )
         throws PlexusCipherException
     {
-        if ( !isEncryptedString( str ) )
+        Matcher matcher = ENCRYPTED_STRING_PATTERN.matcher( str );
+        
+        if ( matcher.matches() || matcher.find() )
+        {
+            return matcher.group( 1 );
+        }
+        else
         {
             throw new PlexusCipherException( "default.plexus.cipher.badEncryptedPassword" );
         }
-
-        int start = str.indexOf( ENCRYPTED_STRING_DECORATION_START );
-        int stop = str.indexOf( ENCRYPTED_STRING_DECORATION_STOP );
-        return str.substring( start + 1, stop );
     }
 
     // ----------------------------------------------------------------------------

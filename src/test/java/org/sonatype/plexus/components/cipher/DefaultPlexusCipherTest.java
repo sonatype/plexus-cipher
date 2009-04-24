@@ -37,6 +37,34 @@ public class DefaultPlexusCipherTest
 
     pc = new DefaultPlexusCipher();
   }
+  
+  public void testIsEncryptedString()
+  {
+      String noBraces = "This is a test";
+      String normalBraces = "Comment {This is a test} other comment with a: }";
+      String escapedBraces = "\\{This is a test\\}";
+      String mixedBraces = "Comment {foo\\{This is a test\\}} other comment with a: }";
+      
+      assertFalse( pc.isEncryptedString( noBraces ) );
+      
+      assertTrue( pc.isEncryptedString( normalBraces ) );
+      
+      assertFalse( pc.isEncryptedString( escapedBraces ) );
+      
+      assertTrue( pc.isEncryptedString( mixedBraces ) );
+  }
+
+  public void testUnDecorate_BracesPermutations()
+        throws PlexusCipherException
+  {
+      String noBraces = "This is a test";
+      String normalBraces = "Comment {This is a test} other comment with a: }";
+      String mixedBraces = "Comment {foo\\{This is a test\\}} other comment with a: }";
+      
+      assertEquals( noBraces, pc.unDecorate( normalBraces ) );
+      
+      assertEquals( "foo\\{" + noBraces + "\\}", pc.unDecorate( mixedBraces ) );
+  }
 
   // -------------------------------------------------------------
   public void testDefaultAlgorithmExists()
