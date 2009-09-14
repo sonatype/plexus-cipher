@@ -12,7 +12,7 @@
   <url>http://spice.sonatype.org/${project.artifactId}</url>
   
   <name>Plexus Cipher: encryption/decryption Component</name>
-  <version>1.5-SNAPSHOT</version>
+  <version>1.5</version>
   
   <distributionManagement>
     <site>
@@ -58,4 +58,10 @@
       <version>3.8.2</version>
     </dependency>
   </dependencies>
+
+  <scm>
+    <connection>scm:svn:http://svn.sonatype.org/spice/tags/plexus-cipher-1.5</connection>
+    <developerConnection>scm:svn:https://svn.sonatype.org/spice/tags/plexus-cipher-1.5</developerConnection>
+    <url>http://svn.sonatype.org/spice/tags/plexus-cipher-1.5</url>
+  </scm>
 </project>
