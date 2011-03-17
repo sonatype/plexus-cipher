@@ -20,12 +20,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.inject.Typed;
 import javax.inject.Named;
 
 /**
  * @author Oleg Gusakov</a>
  */
-@Named
+@Named( "default" )
+@Typed( PlexusCipher.class )
 public class DefaultPlexusCipher
     implements PlexusCipher
 {
