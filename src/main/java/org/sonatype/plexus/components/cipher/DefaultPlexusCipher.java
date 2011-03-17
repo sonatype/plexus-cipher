@@ -12,8 +12,6 @@
  */
 package org.sonatype.plexus.components.cipher;
 
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-
 import java.security.Provider;
 import java.security.Security;
 import java.util.HashSet;
@@ -22,28 +20,30 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Named;
+
 /**
- * @plexus.component role="org.sonatype.plexus.components.cipher.PlexusCipher" role-hint="default"
  * @author Oleg Gusakov</a>
  */
+@Named
 public class DefaultPlexusCipher
-extends AbstractLogEnabled
-implements PlexusCipher
+    implements PlexusCipher
 {
-    
+
     private static final Pattern ENCRYPTED_STRING_PATTERN = Pattern.compile( ".*?[^\\\\]?\\{(.*?[^\\\\])\\}.*" );
 
     private final PBECipher _cipher;
-    
+
     // ---------------------------------------------------------------
     public DefaultPlexusCipher()
-    throws PlexusCipherException
+        throws PlexusCipherException
     {
         _cipher = new PBECipher();
     }
+
     // ---------------------------------------------------------------
     public String encrypt( final String str, final String passPhrase )
-    throws PlexusCipherException
+        throws PlexusCipherException
     {
         if ( str == null || str.length() < 1 )
         {
@@ -96,9 +96,9 @@ implements PlexusCipher
         {
             return false;
         }
-        
+
         Matcher matcher = ENCRYPTED_STRING_PATTERN.matcher( str );
-        
+
         return matcher.matches() || matcher.find();
     }
 
@@ -108,7 +108,7 @@ implements PlexusCipher
         throws PlexusCipherException
     {
         Matcher matcher = ENCRYPTED_STRING_PATTERN.matcher( str );
-        
+
         if ( matcher.matches() || matcher.find() )
         {
             return matcher.group( 1 );
@@ -194,7 +194,7 @@ implements PlexusCipher
     // ---------------------------------------------------------------
     public static void main( final String[] args )
     {
-//        Security.addProvider( new BouncyCastleProvider() );   
+        // Security.addProvider( new BouncyCastleProvider() );
 
         String[] serviceTypes = getServiceTypes();
         if ( serviceTypes != null )
@@ -219,6 +219,6 @@ implements PlexusCipher
             }
         }
     }
-    //---------------------------------------------------------------
-    //---------------------------------------------------------------
+    // ---------------------------------------------------------------
+    // ---------------------------------------------------------------
 }

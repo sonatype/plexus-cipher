@@ -12,16 +12,11 @@
  */
 package org.sonatype.plexus.components.cipher;
 
-import java.security.Provider;
-import java.util.Map;
-
 /**
  * @author Oleg Gusakov
  */
 public interface PlexusCipher
 {
-    public static String ROLE = PlexusCipher.class.getName();
-
     public static final char ENCRYPTED_STRING_DECORATION_START = '{';
 
     public static final char ENCRYPTED_STRING_DECORATION_STOP = '}';

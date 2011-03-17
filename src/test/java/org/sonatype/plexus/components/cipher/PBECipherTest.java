@@ -15,60 +15,57 @@ software distributed under the License is distributed on an
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
-*/
+ */
 
 package org.sonatype.plexus.components.cipher;
 
-import junit.framework.TestCase;
+import org.sonatype.guice.bean.containers.InjectedTestCase;
 
 /**
- *
- *
  * @author Oleg Gusakov
  * @version $Id$
- *
  */
 public class PBECipherTest
-    extends TestCase
+    extends InjectedTestCase
 {
     PBECipher _cipher;
-    
+
     String _cleatText = "veryOpenText";
-    
+
     String _encryptedText = "ibeHrdCOonkH7d7YnH7sarQLbwOk1ljkkM/z8hUhl4c=";
 
     String _password = "testtest";
-    
+
     protected void setUp()
-    throws Exception
+        throws Exception
     {
+        super.setUp();
         _cipher = new PBECipher();
-        
     }
-    
+
     public void testEncrypt()
-    throws Exception
+        throws Exception
     {
         String enc = _cipher.encrypt64( _cleatText, _password );
-        
+
         assertNotNull( enc );
-        
-        System.out.println(enc);
+
+        System.out.println( enc );
 
         String enc2 = _cipher.encrypt64( _cleatText, _password );
-        
+
         assertNotNull( enc2 );
-        
-        System.out.println(enc2);
-        
+
+        System.out.println( enc2 );
+
         assertFalse( enc.equals( enc2 ) );
     }
-    
+
     public void testDecrypt()
-    throws Exception
+        throws Exception
     {
         String clear = _cipher.decrypt64( _encryptedText, _password );
-        
+
         assertEquals( _cleatText, clear );
     }
 }
