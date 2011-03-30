@@ -12,7 +12,7 @@
   <url>http://spice.sonatype.org/${project.artifactId}</url>
 
   <name>Plexus Cipher: encryption/decryption Component</name>
-  <version>1.6</version>
+  <version>1.7-SNAPSHOT</version>
 
   <distributionManagement>
     <site>
