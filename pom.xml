@@ -45,4 +45,11 @@
       <version>3.8.2</version>
     </dependency>
   </dependencies>
+
+  <scm>
+    <connection>scm:git:git@github.com/sonatype/plexus-cipher.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/sonatype/plexus-cipher.git</developerConnection>
+    <url>http://github.com/sonatype/plexus-cipher</url>
+  </scm>
+
 </project>
