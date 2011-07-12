@@ -45,9 +45,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkMode>always</forkMode>
-        </configuration>
         <executions>
           <execution>
             <id>utf8</id>
@@ -70,18 +67,6 @@
             <configuration>
               <systemPropertyVariables>
                 <file.encoding>iso8859-1</file.encoding>
-              </systemPropertyVariables>
-            </configuration>
-          </execution>
-          <execution>
-            <id>cp1252</id>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <systemPropertyVariables>
-                <file.encoding>cp1252</file.encoding>
               </systemPropertyVariables>
             </configuration>
           </execution>
