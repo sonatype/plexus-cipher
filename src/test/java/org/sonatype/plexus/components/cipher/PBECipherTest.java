@@ -19,6 +19,9 @@ under the License.
 
 package org.sonatype.plexus.components.cipher;
 
+import java.util.Arrays;
+import java.util.Properties;
+
 import org.sonatype.guice.bean.containers.InjectedTestCase;
 
 /**
@@ -67,5 +70,22 @@ public class PBECipherTest
         String clear = _cipher.decrypt64( _encryptedText, _password );
 
         assertEquals( _cleatText, clear );
+    }
+    
+    public void testEncoding()
+    	throws Exception
+    {
+    	Properties props = System.getProperties();
+    	Object[] keys = props.keySet().toArray();
+    	Arrays.sort(keys);
+    	for(Object key: keys){
+    		Object value = props.get(key);
+    		System.out.println(key+"="+value);
+    	}
+    	
+    	String pwd = "ÄÜÖß!\"§üöäß\\(/&$";
+    	String encPwd = _cipher.encrypt64(pwd, pwd);
+    	String decPwd = _cipher.decrypt64(encPwd, pwd);
+    	assertEquals(pwd, decPwd);
     }
 }
