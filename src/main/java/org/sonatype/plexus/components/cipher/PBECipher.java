@@ -120,7 +120,7 @@ public class PBECipher
     {
         try
         {
-            byte[] clearBytes = clearText.getBytes();
+            byte[] clearBytes = clearText.getBytes( STRING_ENCODING );
     
             byte[] salt = getSalt( SALT_SIZE );
             
