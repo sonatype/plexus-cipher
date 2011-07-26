@@ -10,7 +10,7 @@
 
   <groupId>org.sonatype.plexus</groupId>
   <artifactId>plexus-cipher</artifactId>
-  <version>1.7</version>
+  <version>1.8-SNAPSHOT</version>
 
   <url>http://spice.sonatype.org/${project.artifactId}</url>
   <name>Plexus Cipher: encryption/decryption Component</name>
