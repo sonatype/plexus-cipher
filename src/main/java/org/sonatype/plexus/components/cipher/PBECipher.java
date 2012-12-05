@@ -63,9 +63,8 @@ public class PBECipher
 
     protected MessageDigest _digester;
     
-    protected SecureRandom _secureRandom;
-    
-    protected boolean _onLinux = false;
+    private static final SecureRandom _secureRandom = new SecureRandom();
+
     //---------------------------------------------------------------
     public PBECipher()
     throws PlexusCipherException
@@ -73,21 +72,6 @@ public class PBECipher
         try
         {
             _digester = MessageDigest.getInstance( DIGEST_ALG );
-            
-            if( System.getProperty( "os.name", "blah" ).toLowerCase().indexOf( "linux" ) != -1 )
-            {
-                _onLinux = true;
-            }
-            
-            if( _onLinux )
-            {
-                System.setProperty( "securerandom.source", "file:/dev/./urandom");
-            }
-            else
-            {
-                _secureRandom = new SecureRandom();
-            }
-            
         }
         catch ( NoSuchAlgorithmException e )
         {
@@ -96,21 +80,10 @@ public class PBECipher
     }
     //---------------------------------------------------------------
     private byte[] getSalt( final int sz )
-    throws NoSuchAlgorithmException, NoSuchProviderException
     {
-        byte [] res = null;
-        
-        if( _secureRandom != null )
-        {
-            _secureRandom.setSeed( System.currentTimeMillis() );
-            res = _secureRandom.generateSeed( sz );
-        }
-        else
-        {
-            res = new byte[ sz ];
-            Random r = new Random( System.currentTimeMillis() );
-            r.nextBytes( res );
-        }
+        byte[] res = new byte[ sz ];
+
+        _secureRandom.nextBytes( res );
 
         return res;
     }
@@ -124,12 +97,6 @@ public class PBECipher
     
             byte[] salt = getSalt( SALT_SIZE );
             
-            // spin it :)
-            if( _secureRandom != null )
-            {
-                new SecureRandom().nextBytes( salt );
-            }
-    
             Cipher cipher = createCipher( password.getBytes( STRING_ENCODING ), salt, Cipher.ENCRYPT_MODE  );
     
             byte [] encryptedBytes = cipher.doFinal( clearBytes );
